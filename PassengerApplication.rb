@@ -16,7 +16,8 @@ class PassengerApplication < NSObject
   RACK = 'rack'
   
   DEVELOPMENT = 0
-  PRODUCTION = 1
+  STAGING = 1
+  PRODUCTION = 2
   
   class << self
     include SharedPassengerBehaviour
@@ -172,7 +173,7 @@ class PassengerApplication < NSObject
       'host' => @host.to_s,
       'aliases' => @aliases.to_s,
       'path' => @path.to_s,
-      'environment' => (@environment.nil? ? @custom_environment : (@environment == DEVELOPMENT ? 'development' : 'production')),
+      'environment' => (@environment.nil? ? @custom_environment : case @environment; when 0: 'development'; when 1: 'staging'; when 2: 'production'; end),
       'vhostname' => @vhostname,
       'user_defined_data' => @user_defined_data
     }
@@ -198,8 +199,13 @@ class PassengerApplication < NSObject
     self.path = $1
     
     data.gsub!(/\n\s*(Rails|Rack)Env\s+(\w+)/, '')
-    if %w{ development production }.include?($2)
-      self.environment = ($2 == 'development' ? DEVELOPMENT : PRODUCTION)
+    case $2
+    when 'development'
+      self.environment = DEVELOPMENT
+    when 'production'
+      self.environment = PRODUCTION
+    when 'staging'
+      self.environment = STAGING
     else
       self.environment = nil
       @custom_environment = $2

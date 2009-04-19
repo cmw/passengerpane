@@ -419,16 +419,16 @@ describe "PassengerApplication, when dealing with custom environments" do
   end
   
   it "should not leave any custom environment declaration in the user defined data" do
-    passenger_app.user_defined_data.should.not.include 'RailsEnv staging'    
+    passenger_app.user_defined_data.should.not.include 'RailsEnv presentation'
   end
   
   it "should have stored the custom environment name and added to the original_values" do
-    assigns(:custom_environment).should == 'staging'
-    assigns(:original_values)['environment'].should == 'staging'
+    assigns(:custom_environment).should == 'presentation'
+    assigns(:original_values)['environment'].should == 'presentation'
   end
   
   it "should return the custom environment in it's hash representation" do
-    passenger_app.to_hash['environment'].should == 'staging'
+    passenger_app.to_hash['environment'].should == 'presentation'
   end
   
   it "should return the new environment setting if the user has selected one of production|development" do
